@@ -23,45 +23,14 @@
           />
 
         </div>
+        <!--   Sliders   -->
+        <div>Video Bitrate {{ bitrate }}M</div>
+        <v-slider v-model="bitrate" max="64" min="1" hint="A higher bitrate creates a clearer image but may increase lag"      dense persistent-hint />
+        <!--   End Sliders   -->
+
       </v-list-item>
       <!--   End Standard Actions   -->
 
-      <!--   Advanced Actions Wrapper   -->
-      <v-expansion-panels style="margin-top: 1em;">
-        <v-expansion-panel class="rounded-xl" style="background-color: rgba(0,0,0, 0.25);">
-          <v-expansion-panel-header>Advanced</v-expansion-panel-header>
-          <v-expansion-panel-content>
-
-
-
-            <!--   Sliders   -->
-            <div>Video Bitrate {{ bitrate }}M</div>
-            <v-slider v-model="bitrate" max="64" min="1" hint="A higher bitrate creates a clearer image but may increase lag"      dense persistent-hint />
-            <!--   End Sliders   -->
-
-
-
-
-            <!--   Advanced Actions   -->
-            <v-list-item v-for="(item, i) in advArgs" :key="i" style="padding: 0;">
-              <div style="display: flex;">
-
-                <v-checkbox
-                  v-model="selectedArgs"
-                  :value="item"
-                  :label="item.arg.replace(/-/g,' ')"
-                  persistent-hint
-                  :hint="item.description"
-                />
-
-              </div>
-            </v-list-item>
-            <!--   End Advanced Actions   -->
-
-          </v-expansion-panel-content>
-        </v-expansion-panel>
-      </v-expansion-panels>
-      <!--   End Advanced Actions Wrapper   -->
 
 
       <v-card-actions style="margin-top: 1em;">
@@ -92,7 +61,11 @@
 
 <script>
 export default {
-  
+
+  props: {
+    serial: String,
+    name: String,
+  },
   methods: {
 
     async scrcpy() {
@@ -104,11 +77,11 @@ export default {
         }
         //console.log("scrcpy"+flags);
 
-        this.$execute(`scrcpy --video-bit-rate ${this.bitrate}M`+flags)
+        this.$execute(`scrcpy -s ${this.serial} --video-bit-rate ${this.bitrate}M`+flags)
           .catch(err => {
             //if (typeof err != "object" && err.startsWith("INFO:")) return; // Catch information outputs
-            if (err.startsWith("WARN:")) return; // Catch default close
             console.log(err)
+            if (err && err.startsWith("WARN:")) return; // Catch default close
             this.dialog = true;
             this.dialogText = err;
           })
@@ -139,60 +112,10 @@ export default {
 
       args: [
         {
-          arg: "--turn-screen-off",
-          description: "Turn off the screen on the physical device"
-        },
-        {
           arg: "--stay-awake",
           description: "Prevent the device from sleeping"
         },
-        {
-          arg: "--no-control",
-          description: "Disable mouse/keyboard passthrough"
-        },
-        {
-          arg: "--disable-screensaver",
-          description: "What it says"
-        }
       ],
-      advArgs: [
-        {
-          arg: "--otg",
-          description: "Simulate physical hardware connections for input devices"
-        },
-        {
-          arg: "--forward-all-clicks",
-          description: "Pass all mouse actions to the device"
-        },
-        {
-          arg: "--power-off-on-close",
-          description: "Turn off the screen when exiting the application"
-        },
-        {
-          arg: "--always-on-top",
-          description: "Make scrcpy always the foreground window"
-        },
-        {
-          arg: "--prefer-text",
-          description: "By default, letters are injected using key events, so that the keyboard behaves as expected in games (typically for WASD keys). But this may cause issues."
-        },
-        {
-          arg: "--raw-key-events",
-          description: "The opposite of 'prefer text'"
-        },
-        {
-          arg: "--no-key-repeat",
-          description: "By default, holding a key down generates repeated key events. This can cause performance problems in some games, where these events are useless anyway."
-        },
-        {
-          arg: "--show-touches",
-          description: "Show physical touches and clicks"
-        },
-        {
-          arg: "--lock-video-orientation",
-          description: "Prevent the device screen from rotating."
-        },
-      ]
     }
   },
 }

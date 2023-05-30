@@ -14,7 +14,7 @@ module.exports = {
     devicePollRate: 1250,
   },
   components: true,
-  plugins: ['~/plugins/execute.js','~/plugins/utils.js','~/plugins/fileManager.js', '~/plugins/mirror.js'],
+  plugins: ['~/plugins/execute.js','~/plugins/utils.js','~/plugins/fileManager.js', '~/plugins/mirror.js', '~/plugins/devices.js'],
 
 
   ssr: false,

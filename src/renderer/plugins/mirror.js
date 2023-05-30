@@ -10,7 +10,7 @@ const execute = (cmd) => {
 const module = {
   start(settings, callback) {
 
-    execute(`adb exec-out screenrecord --output-format=h264 file.mp4`);
+      execute(`adb exec-out screenrecord --output-format=h264 file.mp4`);
 
     callback();
   }
